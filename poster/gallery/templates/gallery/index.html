@@ -1,0 +1,68 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}
+    {{ block.super }} - {{ title }}
+{% endblock %}
+
+{% block content %}
+<main role="main">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>{{ title }}</h1>
+            <p class="lead text-muted">Категории:</p>
+            <p>
+                {% for category in categories %}
+                    <a href="{{ category.get_absolute_url }}"
+                            {% if request.path == category.get_absolute_url %}
+                       class="btn btn-success my-2"
+                            {% else %}
+                       class="btn btn-primary my-2"
+                            {% endif %}
+                    >{{ category.title }}</a>
+                {% endfor %}
+            </p>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                {% for image in images %}
+                    <div class="col-md-4">
+                        <div class="card mb-4 shadow">
+                            <img src="{{image.filename.url}}" class="card-img-top" alt="{{ image.title }}">
+                            {#                                <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>#}
+                            <div class="card-body">
+                                <p class="card-text"><a href="{{ image.get_absolute_url }}">{{ image.title }}</a></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    {% if image.tags.exists %}
+                                        <small class="text-muted">Теги:
+                                             {% for tag in image.tags.all %}
+                                                <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
+                                             {% endfor %}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% for p in page_obj.paginator.page_range %}
+                        {% if page_obj.number == p %}
+                            <li class="page-item active"><span class="page-link">{{ p }}<span class="sr-only">(current)</span></span></li>
+                        {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+                            <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}
+    {{ block.super }} - {{ image.title }}
+{% endblock %}
+
+{% block content %}
+<main role="main">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1>{{ image.title }}</h1>
+            <p class="lead text-muted">Категория: <a href="{{ image.category.get_absolute_url }}">{{ image.category }}</a></p>
+            <p class="text-muted">
+                {% if image.tags.exists %}
+                    <span>
+                        Теги:
+                        {% for tag in image.tags.all %}
+                            <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
+                        {% endfor %}
+                    </span>
+                {% endif %}
+            </p>
+        </div>
+    </section>
+    {#    <div class="info"><span>Категория: <a href="{{ image.category.get_absolute_url }}">{{ image.category }}</a></span></div>#}
+
+    <div class="album py-3 bg-light">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <img src="{{ image.filename.url }}" alt="{{ image.title }}">
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
